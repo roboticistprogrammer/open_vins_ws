@@ -9,6 +9,15 @@ formulation which allows for 3D features to update the state estimate without di
 the filter. Inspired by graph-based optimization systems, the included filter has modularity allowing for convenient
 covariance management with a proper type-based state system. 
 
+# Docker Setup
+
+export VERSION=ros2_22_04
+> Run this in open_vins diretory:
+
+docker build -t ov_$VERSION -f Dockerfile_$VERSION .
+
+
+
 # Commands  for Ros2 Humble Setup:
 
 colcon build --event-handlers console_cohesion+ --packages-select ov_core ov_init ov_msckf ov_eval --parallel-workers 1 --cmake-args -DPython3_EXECUTABLE=$PWD/src/open_vins/.venv/bin/python -DCMAKE_BUILD_PARALLEL_LEVEL=1
