@@ -16,6 +16,32 @@ export VERSION=ros2_22_04
 
 docker build -t ov_$VERSION -f Dockerfile_$VERSION .
 
+> modify bashrc for alias:
+
+# Openvins Docker
+> add folowing to bashrc
+xhost + &> /dev/null
+export DOCKER_CATKINWS=/home/roboticistprogrammer/workspaces/dronex_ws/src/open_vins #modify according to your path
+alias ov_docker="docker run -it --net=host --gpus all \
+    --env=\"NVIDIA_DRIVER_CAPABILITIES=all\" --env=\"DISPLAY\" \
+    --env=\"QT_X11_NO_MITSHM=1\" --volume=\"/tmp/.X11-unix:/tmp/.X11-unix:rw\" \
+    --mount type=bind,source=$DOCKER_CATKINWS,target=/catkin_ws $1"
+    
+>run this from terminal        
+ov_docker ov_ros2_22_04 bash
+
+> Build the package once inside conrainer:
+cd catkin_ws
+colcon build --event-handlers console_cohesion+
+
+>unset venv python version use main python to build
+unset Python3_EXECUTABLE PYTHON_EXECUTABLE VIRTUAL_ENV
+export CMAKE_BUILD_PARALLEL_LEVEL=1
+colcon build --parallel-workers 1 --cmake-args -DPython3_EXECUTABLE=/usr/bin/python3
+
+source install/setup.bash
+ros2 run ov_eval plot_trajectories none src/open_vins/ov_data/sim/udel_gore.txt
+ros2 run ov_msckf run_simulation src/open_vins/config/rpng_sim/estimator_config.yaml
 
 
 # Commands  for Ros2 Humble Setup:
